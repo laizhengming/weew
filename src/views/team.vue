@@ -62,7 +62,8 @@
   </div>
 </template>
 
-<script setup>
+<script setup>  
+import { ElMessage } from "element-plus";
 import { ref } from "vue";
 const input = ref("");
 const value = ref("");
