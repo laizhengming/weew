@@ -22,12 +22,7 @@
           />
         </div>
         <div>
-          <el-select
-            v-model="value"
-            
-            size="large"
-            style="width: 240px"
-          >
+          <el-select v-model="value" size="large" style="width: 240px">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -37,6 +32,32 @@
           </el-select>
         </div>
       </div>
+      <div class="jsp">
+        <el-table :data="tableData" style="width: 100%">
+          <el-table-column
+            prop="index"
+            label="序号"
+            width="80"
+          ></el-table-column>
+          <el-table-column prop="workName" label="作品名称"></el-table-column>
+          <el-table-column prop="submitTime" label="提交时间"></el-table-column>
+          <el-table-column prop="status" label="状态"></el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button
+                type="text"
+                @click="handleEdit(scope.$index, scope.row)"
+                >编辑</el-button
+              >
+              <el-button
+                type="text"
+                @click="handleDelete(scope.$index, scope.row)"
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -44,17 +65,17 @@
 <script setup>
 import { ref } from "vue";
 const input = ref("");
-const value = ref('')
+const value = ref("");
 const options = [
   {
-    value: 'Option1',
-    label: '已评分',
+    value: "Option1",
+    label: "已评分",
   },
   {
-    value: 'Option2',
-    label: '未评分',
-  }
-]
+    value: "Option2",
+    label: "未评分",
+  },
+];
 </script>
 
 <style scoped lang="scss">
@@ -115,11 +136,19 @@ const options = [
   border: none;
   box-shadow: none;
 }
-.content{
+.content {
   display: flex;
   justify-content: flex-start;
   align-items: center;
- 
+
   padding: 20px 80px;
 }
+.jsp {
+  width: 1120px;
+  height: 50px;
+  background: #f1f3f8;
+  margin: 0px auto;
+  margin-top: 20px;
+}
+
 </style>
