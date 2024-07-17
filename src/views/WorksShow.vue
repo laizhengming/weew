@@ -126,7 +126,8 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import service from "@/api/request";
 const input = ref("");
 const activeTab = ref("all");
 console.log(activeTab);
@@ -136,6 +137,13 @@ const pageSize4 = ref(100);
 const handleTabClick = (tab) => {
   console.log(tab);
 };
+onMounted(() => {
+  getlist();
+});
+const getlist=async()=>{
+ const res=await service.get('system/dict/data/type/ds_works_class_one')
+ console.log(res)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -144,7 +152,7 @@ const handleTabClick = (tab) => {
   background-color: #f5f5f5;
   .container {
     width: 1200px;
-    height: 100vh;
+    height: auto;
     margin: 0 auto;
     .search {
       margin-top: 27px;

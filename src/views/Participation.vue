@@ -9,7 +9,7 @@
       >
         <el-tab-pane class="message" label="填写基本信息">
           <div>
-            <el-button class="bianji" type="primary"
+            <el-button v-show="bianji" class="bianji" type="primary"
               ><img src="../assets/img/矢量智能对象@2x(1).png" />编辑</el-button
             >
             <el-form
@@ -24,6 +24,7 @@
             >
               <el-form-item label="作品名称" prop="name">
                 <el-input
+                  v-model="rilename"
                   style="width: 440px; height: 45px"
                   placeholder="请输入"
                 />
@@ -31,16 +32,16 @@
 
               <el-form-item label="所属分类" prop="region">
                 <el-radio-group v-model="radio">
-                  <el-radio :value="3">公共基础课程</el-radio>
-                  <el-radio :value="6">专业技能课程一组</el-radio>
-                  <el-radio :value="9">专业技能课程二组</el-radio>
+                  <el-radio :value="0">公共基础课程</el-radio>
+                  <el-radio :value="1">专业技能课程一组</el-radio>
+                  <el-radio :value="2">专业技能课程二组</el-radio>
                 </el-radio-group>
               </el-form-item>
 
               <el-form-item label="所属课程" prop="phone">
                 <el-select
                   v-model="value"
-                  placeholder="Select"
+                  placeholder="请选择"
                   size="large"
                   style="width: 440px"
                 >
@@ -54,13 +55,13 @@
               </el-form-item>
               <el-form-item label="参赛学校" prop="phone">
                 <el-select
-                  v-model="value"
-                  placeholder="Select"
+                  v-model="value2"
+                  placeholder="请选择"
                   size="large"
                   style="width: 440px"
                 >
                   <el-option
-                    v-for="item in options"
+                    v-for="item in options2"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -79,6 +80,7 @@
               </el-form-item>
               <el-form-item label="联系方式" prop="name">
                 <el-input
+                  v-model="phone"
                   style="width: 440px; height: 45px"
                   placeholder="填写一人的联系方式即可"
                 />
@@ -91,6 +93,7 @@
                   margin-left: 80px;
                   background-color: #436eff;
                 "
+                @click="handleClick2"
                 type="primary"
                 >保存</el-button
               >
@@ -106,6 +109,7 @@
                   >保存</el-button
                 >
                 <el-button
+                  v-show="bianji"
                   class="clear"
                   style="
                     height: 45px;
@@ -130,19 +134,55 @@
                   请上传MP4格式的视频，最多可上传4个视频，且单个视频文件大小不超过500M。
                 </div>
                 <el-upload
-                  class="upload-demo"
-                  drag
-                  :http-request="uploadFile"
-                  multiple
-                  :limit="4"
-                  :on-remove="handleRemove"
-                  :file-list="fileList"
+                  :on-success="handleSuccess"
+                  :on-error="handleError"
                   :before-upload="beforeUpload"
+                  name="videoFile"
+                  :file-list="fileList"
+                  :on-change="handleChange"
+                  :on-remove="handleRemove"
+                  list-type="picture-card"
+                  :auto-upload="false"
+                  limit="4"
                 >
-                  <i class="el-icon-upload"></i>
+                  <el-icon><Plus /></el-icon>
 
-                  <div class="el-upload__tip" slot="tip">上传视频</div>
+                  <template #file="{ file }">
+                    <div>
+                      <img
+                        class="el-upload-list__item-thumbnail"
+                        :src="file.url"
+                        alt=""
+                      />
+                      <span class="el-upload-list__item-actions">
+                        <span
+                          class="el-upload-list__item-preview"
+                          @click="handlePictureCardPreview(file)"
+                        >
+                          <el-icon><zoom-in /></el-icon>
+                        </span>
+                        <span
+                          v-if="!disabled"
+                          class="el-upload-list__item-delete"
+                          @click="handleDownload(file)"
+                        >
+                          <el-icon><Download /></el-icon>
+                        </span>
+                        <span
+                          v-if="!disabled"
+                          class="el-upload-list__item-delete"
+                          @click="handleRemove(file)"
+                        >
+                          <el-icon><Delete /></el-icon>
+                        </span>
+                      </span>
+                    </div>
+                  </template>
                 </el-upload>
+
+                <el-dialog v-model="dialogVisible">
+                  <img w-full :src="dialogImageUrl" alt="Preview Image" />
+                </el-dialog>
 
                 <div v-for="file in fileList" :key="file.uid" class="file-item">
                   <el-image :src="file.url" class="thumbnail"></el-image>
@@ -160,18 +200,21 @@
                 <span>*教案</span>
                 <div class="textupload">
                   <el-upload
-            :action="uploadUrl" 
-            :on-progress="handleProgress"  
-            :on-success="handleSuccess" 
-            :on-error="handleError"  
-            :before-upload="beforeUpload" 
-            list-type="text"
-          >
-            <el-button @click="submitUpload('report')">上传</el-button>
-            <div style="margin-top: 15px;">
-              <el-progress :percentage="reportProgress" :status="reportStatus"></el-progress>
-            </div>
-          </el-upload>
+                    :action="uploadUrl"
+                    :on-progress="handleProgress"
+                    :on-success="handleSuccess"
+                    :on-error="handleError"
+                    :before-upload="beforeUpload"
+                    list-type="text"
+                  >
+                    <el-button @click="submitUpload('report')">上传</el-button>
+                    <div style="margin-top: 15px">
+                      <el-progress
+                        :percentage="reportProgress"
+                        :status="reportStatus"
+                      ></el-progress>
+                    </div>
+                  </el-upload>
                 </div>
               </div>
             </div>
@@ -213,108 +256,75 @@
 </template>
 <script setup >
 import { ref } from "vue";
+import { useUserStore } from "../store/index";
 import { ElMessage } from "element-plus";
 import service from "../api/request";
-
+const user = useUserStore();
+const phone = ref("");
+const textarea = ref("");
+const value = ref("");
+const value2 = ref("");
 const fileList = ref([]);
+const rilename = ref("");
+const radio = ref(3);
+const bianji = ref(false);
 
-const uploadFile = async ({ file, onProgress, onSuccess, onError }) => {
+const options = [
+  {
+    value: "史政活动课",
+    label: "史政活动课",
+  },
+];
+const options2 = [
+  {
+    value: "⻘岛职业技术学院",
+    label: "⻘岛职业技术学院",
+  },
+];
+
+const handleClick2 = async () => {
+  const res = await service.post("biz/dsitems/insert", {
+    title: rilename.value, //'标题',
+    subTitle: rilename.value,
+    // '⼦标题'
+    classOne: radio.value, //'⼀级分类 0:思政课组,1:公共基础课程组,2:专业技能课程⼀组,3:专业技能课程⼆
+    school: value2.value, //'学校名称'
+    teacher: textarea.value, //'参赛教师名称'
+    mobile: phone.value, //'联系⽅式（⽼师）',
+    userId: user.user.userId,
+    //⽤户id
+    dsItemSubList: [
+      {
+        keyWord: "video1",
+        url: "/profile/upload/2024/07/02/da_20240702160943A003.mp4",
+        fileType: 1,
+        subTitle: "da.mp4",
+      },
+    ],
+  });
+  console.log(res);
+  if (res.data.code === 200) {
+    ElMessage.success("提交成功");
+    bianji.value = true;
+  } else {
+    ElMessage.error("提交失败");
+  }
+};
+
+const dialogImageUrl = ref("");
+const dialogVisible = ref(false);
+const disabled = ref(false);
+
+const handleRemove = (file) => {
   console.log(file);
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    // 发送post请求，上传文件
-    const response = await service.post("/common/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      // 上传进度回调函数
-      onUploadProgress: (progressEvent) => {
-        // 计算上传进度
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        );
-        // 调用onProgress函数，更新上传进度
-        onProgress({ percent: percentCompleted });
-        // 更新文件上传进度
-        file.percentage = percentCompleted;
-      },
-    });
-
-    // 上传成功回调函数
-    onSuccess(response.data);
-  } catch (error) {
-    // 上传失败回调函数
-    onError(error);
-  }
 };
 
-const beforeUpload = (file) => {
-  // 可以在这里添加文件类型和大小的校验逻辑
-
-  const isMP4 = file.type === "video/mp4";
-  const isLt500M = file.size / 1024 / 1024 < 500;
-  if (!isLt500M) {
-    ElMessage.error("上传视频大小不能超过 500MB!");
-  }if (file.size > 1024 * 1024 * 100) { // 限制文件不超过100MB
-    ElMessage.error('文件大小不能超过100MB');
-    return false;
-  }
-  
-  return isMP4 && isLt500M&&true;
+const handlePictureCardPreview = (file) => {
+  dialogVisible.value = true;
 };
 
-const handleRemove = (file, newFileList) => {
-  fileList.value = newFileList;
-};
-
-
-const uploadUrl = ref('你的上传接口地址');
-
-// 教学实施报告文件列表和进度
-const reportFileList = ref([]);
-const reportProgress = ref(0);
-const reportStatus = ref('');
-
-
-// 处理文件上传进度
-const handleProgress = (event, file, fileList) => {
-  reportProgress.value = Math.floor((event.loaded / event.total) * 100);
-  reportStatus.value = 'active';
-};
-
-// 处理文件上传成功
-const handleSuccess = (response, file, fileList) => {
-  reportStatus.value = 'success';
-  ElMessage.success('文件上传成功');
-};
-
-// 处理文件上传失败
-const handleError = (err, file, fileList) => {
-  reportStatus.value = 'exception';
-  ElMessage.error('文件上传失败');
-};
-
-// 提交上传
-const submitUpload = (type) => {
-  const fileItem = type === 'report' ? reportFileList.value[0] : null;
-  if (!fileItem) {
-    ElMessage.warning('请先选择文件');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append(type + 'File', fileItem.raw);
-
-  axios.post(uploadUrl.value, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-    onUploadProgress: (progressEvent) => handleProgress(progressEvent, fileItem, reportFileList.value),
-  })
-  .then(() => handleSuccess(null, fileItem, reportFileList.value))
-  .catch((error) => handleError(error, fileItem, reportFileList.value));
+const handleDownload = (file) => {
+  console.log(file);
 };
 </script>
 
@@ -386,7 +396,6 @@ const submitUpload = (type) => {
   height: 690px;
 }
 .video-upload {
-  
   height: 220px;
   .title {
     width: 182px;
@@ -404,7 +413,7 @@ const submitUpload = (type) => {
 .teaching {
   height: 66px;
   border-bottom: 1px solid #e9e9e9;
-  .textupload{
+  .textupload {
     margin-left: 200px;
   }
 }
@@ -480,7 +489,6 @@ const submitUpload = (type) => {
     width: 100%;
     display: block;
     text-align: end;
-
   }
 }
 </style>

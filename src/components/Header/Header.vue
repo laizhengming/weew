@@ -18,9 +18,11 @@
           <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/game">比赛指南</el-menu-item>
           <el-menu-item index="/works">作品展示</el-menu-item>
-          <el-menu-item index="4">获奖名单</el-menu-item>
+          <el-menu-item index="/que">获奖名单</el-menu-item>
           <el-menu-item index="/Participation">我要报名</el-menu-item>
-          <el-menu-item index="/team" v-if="user.user.userType==2">进入专家评审</el-menu-item>
+          <el-menu-item v-if="user.user.userType == 2" index="/team"
+            >进入专家评审</el-menu-item
+          >
         </el-menu>
       </div>
     </div>
@@ -33,26 +35,34 @@
       >
         登录
       </el-button>
-      <el-dropdown style="margin-top: 15px" v-else>
-        <span class="el-dropdown-link">
-          {{ user.user.nickName
-          }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item class="image-hover"
-              ><img
-                src="../../assets/img/矢量智能对象@2x(4).png"
-                alt=""
-              />修改密码</el-dropdown-item
-            >
-            <el-dropdown-item class="image-hover" @click="logout"
-              ><img src="../../assets/img/矢量智能对象@2x(3).png" alt="" />
-              退出
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
+      <div  v-else>
+        <el-avatar
+          :size="35"
+          src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+          style="margin-right: 10px;margin-top: 9px;"
+        ></el-avatar>
+
+        <el-dropdown style="margin-top: 15px">
+          <span class="el-dropdown-link">
+            {{ user.user.nickName
+            }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item class="image-hover"
+                ><img
+                  src="../../assets/img/矢量智能对象@2x(4).png"
+                  alt=""
+                />修改密码</el-dropdown-item
+              >
+              <el-dropdown-item class="image-hover" @click="logout"
+                ><img src="../../assets/img/矢量智能对象@2x(3).png" alt="" />
+                退出
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
 
       <el-dialog
         v-model="dialogVisible"
@@ -168,16 +178,17 @@ const getdsitems = async () => {
   const res = await service.get(`biz/dsitems/info?itemId=2`);
   console.log(res);
 };
-const logout=()=>{
-  user.cleartoken()
-}
+const logout = () => {
+  user.cleartoken();
+};
 </script>
 
 
 <style lang="scss">
 .header {
-  box-shadow:0 5px 10px -5px #e8e9eb;
+  box-shadow: 0 5px 10px -5px #e8e9eb;
   display: flex;
+  background: #fff;
   justify-content: space-around;
   width: 100%;
   height: 60px;

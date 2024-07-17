@@ -1,7 +1,11 @@
 <template>
-    <div>
-        <div class="rule">
-        <h3>2023 年青岛市中等职业学校技能大赛教学能力比赛规程</h3>
+  <div>
+    <div class="rule">
+     
+      <div class="content">
+        <h3 style="text-align: center">
+        2023 年青岛市中等职业学校技能大赛教学能力比赛规程
+      </h3>
         <span>一、指导思想</span>
         <p>
           深入贯彻习近平总书记关于职业教育的重要指示，落实全国职业教育大会精神，按照《国家职业教育改革实施方案》等部署，坚持“以赛促教、以赛促研，以赛促建、以赛促改”的总体思路，引导各校围绕立德树人根本任务，构建“三全育人”体系，深化“课程思政“建设；引导各校切实推进国家教学标准.落地，积极探索”岗课赛证。
@@ -9,37 +13,43 @@
           引导各校推进高水平、结构化教师教学团队建设，提高教师币的师德践行能力、专业教学能力、综合育人能力和自主发展能力，推动示范性教学，促进“能说会做”的“双师型。
           教师成长。
         </p>
+
         <span>二、比赛要求</span>
         <p>
           重点考察教学团队（2-4人）针对某门课程中部分教学内容完成教学设计、实施课堂教学、达成评价目标、进行反思改进的能力。
-   
           1.教学内容。根据职业教育国家教学标准要求，对接职业标准（规范）、职业技能等级标准等，优化课程体系和教学目标，拓展教学内容深度和广度（思政课要严格按照国规教材或国家课程标准规定教学模块和内容进行教学。
         </p>
       </div>
     </div>
+  </div>
 </template>
 <style scoped lang="scss" >
-  .rule {
-   
+.rule {
+ 
+  p {
+    font-size: 14px;
+    color: #000;
+    margin-top: 20px;
+  }
 
-    p {
-      font-size: 14px;
-      color: #000;
-      margin-top: 20px;
-    }
+  span {
+    display: block;
+    font-weight: bold;
+  }
 
-    span {
-      display: block;
-      font-weight: bold;
-    }
+  img {
+    float: right;
+    margin-top: -40px;
 
-    img {
-      float: right;
-      margin-top: -40px;
-
-      width: 240px;
-      height: 250px;
-    }
+    width: 240px;
+    height: 250px;
+  }
 }
+.content{
 
+
+  width: 1200px;
+  margin: 0 auto;
+ 
+}
 </style>
